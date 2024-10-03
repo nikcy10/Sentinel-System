@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model user {
+  id       Int   @id @default(autoincrement())
+  name     String
+  email    String   @unique 
+  password String
+  createdAt DateTime @default(now())
+  property property[]
+}
+
+model property {
+  id          Int   @id @default(autoincrement())
+  name        String
+  user        user     @relation(fields: [email], references: [email])
+  members    Int
+  email      String
+  address    String
+  threats     threats[]
+  report      report[]  
+  createdAt DateTime @default(now())
+}
+model threats {
+  id          Int   @id @default(autoincrement())
+  property    property @relation(fields: [propertyId], references: [id])
+  propertyId  Int
+  temperature       Boolean
+  window     Boolean
+  door       Boolean
+  lpg        Boolean
+  alarm      Boolean
+  water      Boolean 
+  createdAt DateTime @default(now())
+}
+model report {
+  id          Int   @id @default(autoincrement())
+  property    property @relation(fields: [propertyId], references: [id])
+  propertyId  Int
+  threatlevel String 
+  peoplecount Int
+  email       String
+  address     String
+  createdAt DateTime @default(now())
+}
